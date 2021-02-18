@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+    @variants responsive {
+        .imageFlex {
+            flex: 1 1 250px;
+            max-width: 50%;
+        }
+ }
+}

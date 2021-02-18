@@ -1,65 +1,62 @@
 import Head from 'next/head'
-import styles from '../styles/Home.module.css'
-
-export default function Home() {
+import { fetchEntries } from "../util/ContentfulData"
+import Layout from '../components/Layout'
+import Image from 'next/image'
+export default function Home({ data }) {
   return (
-    <div className={styles.container}>
+    
+    <>
+<Layout>
+      {console.log(data)}
       <Head>
-        <title>Create Next App</title>
+        <title>{data[0].name}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+          <h1 className="text-gray-800 text-shadow-lg uppercase text-center font-bold mt-36 text-4xl ">Api Fun</h1>
+<div className="mx-6" >
+<div className="mx-auto flex  justify-center flex-wrap max-w-screen-2xl mt-24">
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+  { 
+  data.map((result, i) => {
+const {name, image: {fields: { file: { url } }}} = result 
+    return (
+   
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
+      <div key={i} className="shadow-lg w-full sm:imageFlex m-4 h-96 text-center">
+        <div className="relative h-56">
+        <Image
+        loading="lazy"
+         objectFit="cover" 
+         layout="fill" 
+         src={`https:${url}`} 
+         />  
+   
+</div>
+        <h2 className="py-8 text-2xl">  { name }</h2>
+     
+      </div>
+      
+    )
+  })
+}
+</div>
 
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
     </div>
+    </Layout>
+    </>
   )
+}
+
+export async function getStaticProps() {
+  const res = await fetchEntries()
+  const data = await res.map((post) => {
+    return post.fields
+  })
+
+  return {
+    props: {
+      data
+    },
+  }
 }
